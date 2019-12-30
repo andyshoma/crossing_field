@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.crossingfield.R;
 
-public class MeetingTabFragment extends Fragment {
+public class CrossingTabFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -21,6 +21,7 @@ public class MeetingTabFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle saveInstanceState){
         super.onViewCreated(view, saveInstanceState);
+
     }
 
 }
