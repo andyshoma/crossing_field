@@ -3,19 +3,148 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/pop01"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/pop01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="back">
+        </Button>
+
+    </LinearLayout>
+
+    <Space
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="back"></Button>
+        android:layout_height="20pt">
+    </Space>
 
     <TextView
-        android:id="@+id/text8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10pt"
-        android:layout_gravity="center">
+        android:text="性別"
+        android:textSize="15pt"
+        android:textColor="@android:color/black">
     </TextView>
+
+    <RadioGroup
+        android:id="@+id/search_radio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="男性"
+            android:textSize="10pt">
+        </RadioButton>
+
+        <Space
+            android:layout_width="30sp"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="女性"
+            android:textSize="10pt">
+        </RadioButton>
+
+    </RadioGroup>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="20pt">
+    </Space>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="年齢"
+        android:textSize="15pt"
+        android:textColor="@android:color/black">
+    </TextView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/old_edit1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10pt"
+            android:text="歳　〜　">
+        </TextView>
+
+        <EditText
+            android:id="@+id/old_edit2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10pt"
+            android:text="歳">
+        </TextView>
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="20pt">
+    </Space>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="居住地"
+        android:textSize="15pt"
+        android:textColor="@android:color/black">
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Space
+            android:layout_width="30pt"
+            android:layout_height="wrap_content">
+        </Space>
+
+        <Spinner
+            android:id="@+id/search_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autofillHints="都道府県"
+            android:layout_gravity="left">
+        </Spinner>
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
+
+    <Button
+        android:id="@+id/search_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="検索"
+        android:layout_gravity="center"/>
+
 
 </LinearLayout>

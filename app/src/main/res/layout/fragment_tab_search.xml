@@ -5,12 +5,32 @@
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-    <Button
-        android:id="@+id/search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:gravity="top"
-        android:text="search"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </Space>
+
+        <ImageButton
+            android:id="@+id/search"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/search">
+        </ImageButton>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content">
+        </Space>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>

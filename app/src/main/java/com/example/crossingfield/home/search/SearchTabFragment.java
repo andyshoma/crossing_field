@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,7 +27,7 @@ public class SearchTabFragment extends Fragment {
     public void onViewCreated(View view, Bundle saveInstanceState){
         super.onViewCreated(view, saveInstanceState);
 
-        Button searchButton = (Button)view.findViewById(R.id.search);
+        ImageButton searchButton = (ImageButton) view.findViewById(R.id.search);
         searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
