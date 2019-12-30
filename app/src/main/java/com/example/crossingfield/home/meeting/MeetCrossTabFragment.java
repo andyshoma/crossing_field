@@ -4,14 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.crossingfield.R;
-import com.example.crossingfield.lib.HomeFragmentPagerAdapter;
-import com.example.crossingfield.lib.MeetCrossFragmentPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class MeetCrossTabFragment extends Fragment {

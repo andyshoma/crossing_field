@@ -1,4 +1,4 @@
-package com.example.crossingfield.lib;
+package com.example.crossingfield.home.meeting;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
