@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.daasuu.bl.BubbleLayout;
 import com.example.crossingfield.R;
 
 public class MessageActivity extends AppCompatActivity {
@@ -39,12 +42,13 @@ public class MessageActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                View messageView = layoutInflater.inflate(R.layout.layout_message, null);
                 String message = edit.getText().toString();
-                TextView textView = new TextView(context);
-                textView.setText(message);
-                textView.setTextSize(30);
-                textView.setGravity(Gravity.RIGHT|Gravity.BOTTOM);
-                linearLayout.addView(textView);
+                ((ImageView) messageView.findViewById(R.id.image_message)).setImageResource(R.drawable.monky);
+                ((TextView) messageView.findViewById(R.id.text_message)).setText(message);
+
+                linearLayout.addView(messageView);
 
                 edit.getText().clear();
             }
