@@ -7,24 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.crossingfield.R;
+import com.example.crossingfield.lib.User;
+
+import java.util.ArrayList;
 
 public class MessageTabFragment extends Fragment {
 
-    private static final String[] texts = {
-            "Ventnor",
-            "Wroxall",
-            "Whitewell",
-            "Ryde",
-            "StLawrence",
-            "Lake",
-            "Sandown",
-            "Shanklin"
-    };
+    ArrayList<User> users;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -44,19 +39,36 @@ public class MessageTabFragment extends Fragment {
 
         ListView listView = getActivity().findViewById(R.id.message_list);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, texts);
+        sampleUsers();
 
-        listView.setAdapter(arrayAdapter);
+        BaseAdapter adapter = new MessageListAdapter(getContext(), users);
+
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getContext(), MessageActivity.class);
-                intent.putExtra("name", texts[position]);
+                intent.putExtra("name", users.get(position).getUsername());
+                intent.putExtra("icon", users.get(position).getPhoto());
                 startActivity(intent);
             }
         });
 
     }
 
+    private void setUsers(ArrayList<User> users){
+        this.users = users;
+    }
+
+    private void sampleUsers(){
+        ArrayList<User> users = new ArrayList<>();
+
+        users.add(new User("andy", "male", 21, "和歌山", R.drawable.monky));
+        users.add(new User("maep", "male", 22, "香川", R.drawable.monky));
+        users.add(new User("yossi", "male", 22, "岐阜", R.drawable.monky));
+        users.add(new User("arthur", "male", 22, "愛知", R.drawable.monky));
+
+        setUsers(users);
+    }
 }

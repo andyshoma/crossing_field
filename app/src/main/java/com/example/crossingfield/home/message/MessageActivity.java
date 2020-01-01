@@ -23,6 +23,8 @@ public class MessageActivity extends AppCompatActivity {
     private Context context;
     private LinearLayout linearLayout;
 
+    private int icon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,7 @@ public class MessageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
+        icon = intent.getIntExtra("icon", 0);
 
         setTitle(name);
 
@@ -45,7 +48,7 @@ public class MessageActivity extends AppCompatActivity {
                 LayoutInflater layoutInflater = LayoutInflater.from(context);
                 View messageView = layoutInflater.inflate(R.layout.layout_message, null);
                 String message = edit.getText().toString();
-                ((ImageView) messageView.findViewById(R.id.image_message)).setImageResource(R.drawable.monky);
+                ((ImageView) messageView.findViewById(R.id.image_message)).setImageResource(icon);
                 ((TextView) messageView.findViewById(R.id.text_message)).setText(message);
 
                 linearLayout.addView(messageView);

@@ -1,4 +1,4 @@
-package com.example.crossingfield;
+package com.example.crossingfield.lib;
 
 import com.example.crossingfield.lib.StringConstants;
 

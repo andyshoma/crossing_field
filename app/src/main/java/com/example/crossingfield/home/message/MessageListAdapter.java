@@ -1,4 +1,4 @@
-package com.example.crossingfield.home.good;
+package com.example.crossingfield.home.message;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import com.example.crossingfield.lib.User;
 
 import java.util.ArrayList;
 
-public class GoodListAdapter extends BaseAdapter {
+public class MessageListAdapter extends BaseAdapter {
 
     static class ViewHolder{
         ImageView imageView;
@@ -24,7 +24,7 @@ public class GoodListAdapter extends BaseAdapter {
     LayoutInflater layoutInflater = null;
     ArrayList<User> users;
 
-    public GoodListAdapter(Context context, ArrayList<User> users){
+    public MessageListAdapter(Context context, ArrayList<User> users){
         super();
         this.context = context;
         this.users = users;
@@ -51,10 +51,10 @@ public class GoodListAdapter extends BaseAdapter {
 
         ViewHolder viewHolder;
         if (convertView == null){
-            convertView = layoutInflater.inflate(R.layout.list_good, parent, false);
+            convertView = layoutInflater.inflate(R.layout.list_message, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.imageView = convertView.findViewById(R.id.image_thumb);
-            viewHolder.textView = convertView.findViewById(R.id.name_list);
+            viewHolder.imageView = convertView.findViewById(R.id.image_thumb2);
+            viewHolder.textView = convertView.findViewById(R.id.text_name);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
