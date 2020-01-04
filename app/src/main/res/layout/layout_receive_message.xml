@@ -16,7 +16,7 @@
             android:layout_height="30dp"/>
 
         <com.daasuu.bl.BubbleLayout
-            android:id="@+id/bubble"
+            android:id="@+id/receive_bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -31,7 +31,7 @@
             app:bl_bubbleColor="#6EB7DB">
 
             <TextView
-                android:id="@+id/text_message"
+                android:id="@+id/receive_text_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 

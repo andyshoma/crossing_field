@@ -176,14 +176,23 @@
         android:layout_height="40sp" />
 
     <Button
+        android:id="@+id/send_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#208DC3"
+        android:text="image"
+        android:textColor="#FFFFFF"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="40sp" />
+
+    <Button
         android:id="@+id/entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#208DC3"
         android:text="entry"
-        android:textColor="#FFFFFF">
-
-    </Button>
-
+        android:textColor="#FFFFFF"/>
 
 </LinearLayout>

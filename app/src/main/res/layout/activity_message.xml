@@ -38,16 +38,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="メッセージを入力"></EditText>
+                android:hint="メッセージを入力"/>
 
-            <Button
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="wrap_content"/>
+
+            <ImageButton
                 android:id="@+id/send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="送信"
-                android:textSize="8pt">
+                android:layout_gravity="center"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/send_button"/>
 
-            </Button>
+            <Space
+                android:layout_width="10dp"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
     </LinearLayout>

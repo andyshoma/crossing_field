@@ -5,8 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.core.content.res.ResourcesCompat;
 
 import com.example.crossingfield.R;
 import com.example.crossingfield.lib.User;
@@ -18,11 +21,13 @@ public class GoodListAdapter extends BaseAdapter {
     static class ViewHolder{
         ImageView imageView;
         TextView textView;
+        ImageButton imageButton;
     }
 
     Context context;
     LayoutInflater layoutInflater = null;
     ArrayList<User> users;
+    View view;
 
     public GoodListAdapter(Context context, ArrayList<User> users){
         super();
@@ -49,20 +54,32 @@ public class GoodListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
 
-        ViewHolder viewHolder;
-        if (convertView == null){
-            convertView = layoutInflater.inflate(R.layout.list_good, parent, false);
+        view = convertView;
+
+        final ViewHolder viewHolder;
+        if (view == null){
+            view = layoutInflater.inflate(R.layout.list_good, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.imageView = convertView.findViewById(R.id.image_thumb);
-            viewHolder.textView = convertView.findViewById(R.id.name_list);
-            convertView.setTag(viewHolder);
+            viewHolder.imageView = view.findViewById(R.id.image_thumb);
+            viewHolder.textView = view.findViewById(R.id.name_list);
+            viewHolder.imageButton = view.findViewById(R.id.thanks);
+
+            viewHolder.imageButton.setBackground(view.getResources().getDrawable(R.drawable.thanks));
+            view.setTag(viewHolder);
         }else{
-            viewHolder = (ViewHolder)convertView.getTag();
+            viewHolder = (ViewHolder)view.getTag();
         }
 
         viewHolder.imageView.setImageResource(users.get(position).getPhoto());
         viewHolder.textView.setText(users.get(position).getUsername());
 
-        return convertView;
+        viewHolder.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // いいねありがとうボタンが押された時
+            }
+        });
+
+        return view;
     }
 }

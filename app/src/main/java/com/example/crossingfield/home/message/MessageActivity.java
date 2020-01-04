@@ -5,16 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.daasuu.bl.BubbleLayout;
 import com.example.crossingfield.R;
 
 public class MessageActivity extends AppCompatActivity {
@@ -41,19 +40,20 @@ public class MessageActivity extends AppCompatActivity {
         edit = findViewById(R.id.send_box);
         linearLayout = findViewById(R.id.linear1);
 
-        Button sendButton = findViewById(R.id.send);
+        ImageButton sendButton = findViewById(R.id.send);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater layoutInflater = LayoutInflater.from(context);
-                View messageView = layoutInflater.inflate(R.layout.layout_message, null);
                 String message = edit.getText().toString();
-                ((ImageView) messageView.findViewById(R.id.image_message)).setImageResource(icon);
-                ((TextView) messageView.findViewById(R.id.text_message)).setText(message);
+                if (message.equals("") != true){
+                    LayoutInflater layoutInflater = LayoutInflater.from(context);
+                    View messageView = layoutInflater.inflate(R.layout.layout_send_message, null);
+                    ((TextView) messageView.findViewById(R.id.send_text_message)).setText(message);
 
-                linearLayout.addView(messageView);
+                    linearLayout.addView(messageView);
 
-                edit.getText().clear();
+                    edit.getText().clear();
+                }
             }
         });
     }

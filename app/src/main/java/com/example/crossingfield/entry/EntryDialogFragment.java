@@ -13,6 +13,8 @@ import androidx.fragment.app.DialogFragment;
 import com.example.crossingfield.home.HomeActivity;
 import com.example.crossingfield.lib.MySocket;
 
+import java.util.List;
+
 public class EntryDialogFragment extends DialogFragment {
 
     private  Context context;
@@ -33,7 +35,7 @@ public class EntryDialogFragment extends DialogFragment {
                 .setPositiveButton("はい", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //entry();
+                        entry();
 
                         Intent intent = new Intent(context, HomeActivity.class);
                         startActivity(intent);

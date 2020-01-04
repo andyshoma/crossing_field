@@ -76,6 +76,7 @@ public class MySocket {
 
                 // サーバへメッセージを送信
                 pw.println(send_message);
+                System.out.println(send_message);
             }
         }catch (UnknownHostException e){
             e.printStackTrace();

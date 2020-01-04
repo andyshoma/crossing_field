@@ -21,6 +21,9 @@ import androidx.fragment.app.FragmentManager;
 import com.example.crossingfield.R;
 import com.example.crossingfield.lib.MySocket;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.crossingfield.lib.MathConstants.*;
 import static com.example.crossingfield.lib.StringConstants.*;
 
@@ -102,7 +105,7 @@ public class SearchFragment extends Fragment {
 
                 String old = oldFrom.getText().toString() + ',' +  oldTo.getText().toString();
 
-                sendMessage = String.valueOf(SEARCH) + ",{" + GENDER + ':' + gender + ',' + OLD + ':' + old + ',' + AREA + ':' + area;
+                sendMessage = String.valueOf(SEARCH) + ',' + gender + ',' + old + ',' + area;
                 search();
             }
         });

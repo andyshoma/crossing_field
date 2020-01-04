@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +19,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.crossingfield.R;
+import com.example.crossingfield.lib.MyHTTP;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.crossingfield.lib.MathConstants.*;
 import static com.example.crossingfield.lib.StringConstants.*;
 
@@ -37,6 +47,9 @@ public class EntryActivity extends AppCompatActivity {
 
     // 入力した都道府県
     private String area;
+
+    // 送信するデータ
+    private byte[] data;
 
 
     @Override
@@ -67,6 +80,8 @@ public class EntryActivity extends AppCompatActivity {
         rg = (RadioGroup)findViewById(R.id.radio);
 
         final Button entryButton = (Button)findViewById(R.id.entry);
+
+        Button imageButton = (Button)findViewById(R.id.send_image);
 
 
 
@@ -143,6 +158,18 @@ public class EntryActivity extends AppCompatActivity {
             }
         });
 
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.monky);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                data = baos.toByteArray();
+
+                up();
+            }
+        });
+
         // エントリーボタンが押された時
         entryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,10 +195,12 @@ public class EntryActivity extends AppCompatActivity {
                 String password = passwordText.getText().toString();
 
                 if (gender != null && name.equals("") == false && y.equals("") == false && password.equals("") == false){
+
+                    String send_message = String.valueOf(ENTRY) + ',' + name + ',' + password + ',' + gender + ',' + y + '/' + m + '/' + d + ',' + area;
+
                     String message = "ニックネーム : " + name + '\n' + "性別 : " + gender + '\n' + "生年月日 : " + y + '年' + m + '月' + d + '日' + '\n' + "居住地 : " + area + '\n' + "password : " + password;
-                    String sendMessage = String.valueOf(ENTRY) + ",{" + USER_NAME + ':' + name + ',' + PASSWORD + ':' + password + ',' + GENDER + ':' + gender + ',' + BIRTHDAY + ':' + y + ':' + m + ':' + d + ',' + AREA + ':' + area;
                     // 入力確認ダイアログの表示
-                    DialogFragment entryFragment = new EntryDialogFragment(context, message, sendMessage);
+                    DialogFragment entryFragment = new EntryDialogFragment(context, message, send_message);
                     entryFragment.show(getSupportFragmentManager(), "entry");
                 }else{
                     System.out.println("no");
@@ -179,5 +208,21 @@ public class EntryActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void up(){
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... voids){
+
+                // 送信先のURL
+                String url = "";
+
+                MyHTTP http = new MyHTTP(url);
+                http.upload(data);
+
+                return null;
+            }
+        }.execute();
     }
 }
