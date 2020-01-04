@@ -20,7 +20,9 @@ public class GoodListAdapter extends BaseAdapter {
 
     static class ViewHolder{
         ImageView imageView;
-        TextView textView;
+        TextView nameView;
+        TextView ageView;
+        TextView areaView;
         ImageButton imageButton;
     }
 
@@ -61,7 +63,9 @@ public class GoodListAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.list_good, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.imageView = view.findViewById(R.id.image_thumb);
-            viewHolder.textView = view.findViewById(R.id.name_list);
+            viewHolder.nameView = view.findViewById(R.id.name_list);
+            viewHolder.ageView = view.findViewById(R.id.age_list);
+            viewHolder.areaView = view.findViewById(R.id.area_list);
             viewHolder.imageButton = view.findViewById(R.id.thanks);
 
             viewHolder.imageButton.setBackground(view.getResources().getDrawable(R.drawable.thanks));
@@ -71,7 +75,9 @@ public class GoodListAdapter extends BaseAdapter {
         }
 
         viewHolder.imageView.setImageResource(users.get(position).getPhoto());
-        viewHolder.textView.setText(users.get(position).getUsername());
+        viewHolder.nameView.setText(users.get(position).getUsername());
+        viewHolder.ageView.setText(String.valueOf(users.get(position).getOld() + "歳"));
+        viewHolder.areaView.setText(users.get(position).getArea());
 
         viewHolder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
