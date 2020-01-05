@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.crossingfield.R;
+import com.example.crossingfield.lib.MyHTTP;
+import com.example.crossingfield.lib.MySocket;
 import com.google.android.material.tabs.TabLayout;
 
 public class HomeActivity extends AppCompatActivity {
@@ -62,5 +66,25 @@ public class HomeActivity extends AppCompatActivity {
         ((ImageView) tabMypage.findViewById(R.id.tab_icon)).setImageResource(R.drawable.mypage);
         ((TextView) tabMypage.findViewById(R.id.tab_text)).setText("マイページ");
         tabLayout.getTabAt(4).setCustomView(tabMypage);
+    }
+
+    private void init(){
+        new AsyncTask<Void, Void, String>(){
+            @Override
+            protected String doInBackground(Void... voids){
+
+                String send_message = "";
+
+                MySocket socket = new MySocket(context);
+                socket.setMessage(send_message);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String string){
+
+            }
+        }.execute();
     }
 }

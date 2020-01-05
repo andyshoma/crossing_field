@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,10 +27,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.crossingfield.R;
+import com.example.crossingfield.home.HomeActivity;
 import com.example.crossingfield.lib.MyHTTP;
+import com.example.crossingfield.lib.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,11 +66,11 @@ public class EntryActivity extends AppCompatActivity {
     private String area;
 
     // 送信するデータ
-    private ByteArrayOutputStream data;
+    private String image;
 
     // 送信する画像データ
     private Bitmap bmp;
-    private String image;
+    private String imageSt;
 
 
     @Override
@@ -213,6 +220,8 @@ public class EntryActivity extends AppCompatActivity {
                 String d = String.valueOf(day);
                 String password = passwordText.getText().toString();
 
+                User user = new User();
+
                 if (gender != null && name.equals("") == false && y.equals("") == false && password.equals("") == false && image != null){
 
                     String send_message = String.valueOf(ENTRY) + ',' + name + ',' + password + ',' + gender + ',' + y + '/' + m + '/' + d + ',' + area + ',';
@@ -220,8 +229,11 @@ public class EntryActivity extends AppCompatActivity {
                     String message = "ニックネーム : " + name + '\n' + "性別 : " + gender + '\n' + "生年月日 : " + y + '年' + m + '月' + d + '日' + '\n' + "居住地 : " + area + '\n' + "password : " + password;
 
                     // 入力確認ダイアログの表示
-                    DialogFragment entryFragment = new EntryDialogFragment(context, message, send_message, bmp);
+                    DialogFragment entryFragment = new EntryDialogFragment(context, message, send_message, bmp, image);
                     entryFragment.show(getSupportFragmentManager(), "entry");
+
+                    Intent intent = new Intent(context, HomeActivity.class);
+                    startActivity(intent);
                 }else{
                     System.out.println("no");
                     Toast.makeText(context, "a", Toast.LENGTH_LONG).show();
@@ -241,28 +253,20 @@ public class EntryActivity extends AppCompatActivity {
                     bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    data = baos;
-                    //image = baos.toString("UTF-8");
+
+                    byte[] bImage =baos.toByteArray();
+                    String base64 = Base64.encodeToString(bImage, Base64.DEFAULT);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("image", base64);
+
+                    image = jsonObject.toString();
                 }catch (IOException e){
+                    e.printStackTrace();
+                }catch (JSONException e){
                     e.printStackTrace();
                 }
             }
         }
-    }
-
-    private void up(){
-        new AsyncTask<Void, Void, Void>(){
-            @Override
-            protected Void doInBackground(Void... voids){
-
-                // 送信先のURL
-                String url = "";
-
-                MyHTTP http = new MyHTTP(url);
-                http.upload(data);
-
-                return null;
-            }
-        }.execute();
     }
 }

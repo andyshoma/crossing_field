@@ -20,8 +20,10 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.crossingfield.R;
 import com.example.crossingfield.home.HomeActivity;
+import com.example.crossingfield.lib.MyHTTP;
 import com.example.crossingfield.lib.MySocket;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.WeakHashMap;
 
@@ -34,10 +36,11 @@ public class EntryDialogFragment extends DialogFragment {
     private String image;
     private ImageView imageView;
 
-    public EntryDialogFragment(Context context, String message, String sendMessage, Bitmap bmp){
+    public EntryDialogFragment(Context context, String message, String sendMessage, Bitmap bmp, String image){
         this.context = context;
         this.message = message;
         this.sendMessage = sendMessage;
+        this.image = image;
         this.bmp = bmp;
     }
 
@@ -63,9 +66,6 @@ public class EntryDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         entry();
-
-                        Intent intent = new Intent(context, HomeActivity.class);
-                        startActivity(intent);
                     }
                 })
                 .setNegativeButton("いいえ", null)
@@ -79,14 +79,40 @@ public class EntryDialogFragment extends DialogFragment {
     }
 
     private void entry(){
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, String>(){
 
             @Override
-            protected Void doInBackground(Void... voids) {
+            protected String doInBackground(Void... voids) {
 
                 MySocket socket = new MySocket(context);
                 socket.setMessage(sendMessage);
-                socket.sendMessage();
+                String get_message = socket.trySend();
+
+                return get_message;
+            }
+
+            @Override
+            protected void onPostExecute(String message) {
+                super.onPostExecute(message);
+
+                if (message.equals("done")) {
+                    up();
+                }
+            }
+        }.execute();
+    }
+
+    private void up(){
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... voids){
+
+                // 送信先のURL
+                String url = "http://192.168.2.200:8100/save_prof";
+
+                MyHTTP http = new MyHTTP(url);
+                http.upload(image);
+                System.out.println("doing");
 
                 return null;
             }

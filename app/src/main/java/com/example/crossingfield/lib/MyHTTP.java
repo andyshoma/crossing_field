@@ -4,12 +4,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class MyHTTP {
 
@@ -24,29 +29,46 @@ public class MyHTTP {
         }
     }
 
-    public void upload(ByteArrayOutputStream data) {
+    public void upload(String data) {
 
         try{
             httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setInstanceFollowRedirects(false);
-            httpURLConnection.setDoOutput(true);
 
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            httpURLConnection.setInstanceFollowRedirects(false);
+            httpURLConnection.setRequestProperty("Accept-Language", "jp");
             httpURLConnection.setReadTimeout(10000);
             httpURLConnection.setConnectTimeout(20000);
 
             httpURLConnection.connect();
 
             try{
-                OutputStream outputStream = new BufferedOutputStream(httpURLConnection.getOutputStream());
-                outputStream.write(data.toByteArray());
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(data.getBytes(StandardCharsets.UTF_8));
                 outputStream.flush();
+                outputStream.close();
             }catch (IOException e){
                 e.printStackTrace();
             }
+
+            if (httpURLConnection.getResponseCode() != 200){
+                throw new RuntimeException("Failed : HTTP error code : " + httpURLConnection.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+
+            String output;
+            while ((output = br.readLine()) != null){
+                System.out.println(output);
+            }
+
         }catch (IOException e){
             e.printStackTrace();
-        }finally {
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally{
             if (httpURLConnection != null){
                 httpURLConnection.disconnect();
                 httpURLConnection = null;
