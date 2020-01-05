@@ -1,5 +1,8 @@
 package com.example.crossingfield.home.good;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -67,11 +70,16 @@ public class GoodTabFragment extends Fragment {
 
     private void sampleUsers(){
         ArrayList<User> users = new ArrayList<>();
+        Resources r = getResources();
+        Bitmap andy = BitmapFactory.decodeResource(r, R.drawable.monky);
+        Bitmap maep = BitmapFactory.decodeResource(r, R.drawable.monky);
+        Bitmap yossi = BitmapFactory.decodeResource(r, R.drawable.monky);
+        Bitmap arthur = BitmapFactory.decodeResource(r, R.drawable.monky);
 
-        users.add(new User("andy", "male", 21, "和歌山", R.drawable.monky));
-        users.add(new User("maep", "male", 22, "香川", R.drawable.monky));
-        users.add(new User("yossi", "male", 22, "岐阜", R.drawable.monky));
-        users.add(new User("arthur", "male", 22, "愛知", R.drawable.monky));
+        users.add(new User("andy", "male", 21, "和歌山", andy));
+        users.add(new User("maep", "male", 22, "香川", maep));
+        users.add(new User("yossi", "male", 22, "岐阜", yossi));
+        users.add(new User("arthur", "male", 22, "愛知", arthur));
 
         setGoodUsers(users);
     }

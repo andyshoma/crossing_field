@@ -1,18 +1,22 @@
 package com.example.crossingfield.lib;
 
+import android.graphics.Bitmap;
+
 import com.example.crossingfield.lib.StringConstants;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String username;
     private String gender;
     private Integer old;
     private String area;
-    private int photo;
+    private Bitmap photo;
 
     public User(){}
 
-    public User(String username, String gender, Integer old, String area, int photo){
+    public User(String username, String gender, Integer old, String area, Bitmap photo){
         this.username = username;
         this.gender = gender;
         this.old = old;
@@ -37,7 +41,7 @@ public class User {
         this.area = area;
     }
 
-    public void setPhoto(int photo){
+    public void setPhoto(Bitmap photo){
         this.photo = photo;
     }
 
@@ -58,7 +62,7 @@ public class User {
         return area;
     }
 
-    public int getPhoto(){
+    public Bitmap getPhoto(){
         return photo;
     }
 

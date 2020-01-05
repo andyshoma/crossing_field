@@ -17,9 +17,12 @@ import com.example.crossingfield.lib.MyHTTP;
 import com.example.crossingfield.lib.MySocket;
 import com.google.android.material.tabs.TabLayout;
 
+import static com.example.crossingfield.lib.MathConstants.*;
+
 public class HomeActivity extends AppCompatActivity {
 
-    Context context;
+    public Context context;
+    public String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         context = getApplicationContext();
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name");
+
+        //init();
 
         HomeFragmentPagerAdapter adapter = new HomeFragmentPagerAdapter(getSupportFragmentManager());
         final ViewPager viewPager = findViewById(R.id.pager);
@@ -73,12 +80,13 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... voids){
 
-                String send_message = "";
+                String send_message = String.valueOf(INIT) + ',' + name;
 
                 MySocket socket = new MySocket(context);
                 socket.setMessage(send_message);
+                String get_message = socket.trySend();
 
-                return null;
+                return get_message;
             }
 
             @Override

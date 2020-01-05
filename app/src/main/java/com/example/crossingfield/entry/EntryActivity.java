@@ -220,8 +220,6 @@ public class EntryActivity extends AppCompatActivity {
                 String d = String.valueOf(day);
                 String password = passwordText.getText().toString();
 
-                User user = new User();
-
                 if (gender != null && name.equals("") == false && y.equals("") == false && password.equals("") == false && image != null){
 
                     String send_message = String.valueOf(ENTRY) + ',' + name + ',' + password + ',' + gender + ',' + y + '/' + m + '/' + d + ',' + area + ',';
@@ -229,11 +227,8 @@ public class EntryActivity extends AppCompatActivity {
                     String message = "ニックネーム : " + name + '\n' + "性別 : " + gender + '\n' + "生年月日 : " + y + '年' + m + '月' + d + '日' + '\n' + "居住地 : " + area + '\n' + "password : " + password;
 
                     // 入力確認ダイアログの表示
-                    DialogFragment entryFragment = new EntryDialogFragment(context, message, send_message, bmp, image);
+                    DialogFragment entryFragment = new EntryDialogFragment(context, message, send_message, bmp, image, name);
                     entryFragment.show(getSupportFragmentManager(), "entry");
-
-                    Intent intent = new Intent(context, HomeActivity.class);
-                    startActivity(intent);
                 }else{
                     System.out.println("no");
                     Toast.makeText(context, "a", Toast.LENGTH_LONG).show();

@@ -74,7 +74,7 @@ public class GoodListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)view.getTag();
         }
 
-        viewHolder.imageView.setImageResource(users.get(position).getPhoto());
+        viewHolder.imageView.setImageBitmap(users.get(position).getPhoto());
         viewHolder.nameView.setText(users.get(position).getUsername());
         viewHolder.ageView.setText(String.valueOf(users.get(position).getOld() + "歳"));
         viewHolder.areaView.setText(users.get(position).getArea());

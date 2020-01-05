@@ -35,13 +35,15 @@ public class EntryDialogFragment extends DialogFragment {
     private Bitmap bmp;
     private String image;
     private ImageView imageView;
+    private String name;
 
-    public EntryDialogFragment(Context context, String message, String sendMessage, Bitmap bmp, String image){
+    public EntryDialogFragment(Context context, String message, String sendMessage, Bitmap bmp, String image ,String name){
         this.context = context;
         this.message = message;
         this.sendMessage = sendMessage;
         this.image = image;
         this.bmp = bmp;
+        this.name = name;
     }
 
     @Override
@@ -66,6 +68,10 @@ public class EntryDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         entry();
+
+                        Intent intent = new Intent(context, HomeActivity.class);
+                        intent.putExtra("name", name);
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton("いいえ", null)

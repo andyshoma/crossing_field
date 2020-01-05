@@ -60,7 +60,7 @@ public class MessageListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        viewHolder.imageView.setImageResource(users.get(position).getPhoto());
+        viewHolder.imageView.setImageBitmap(users.get(position).getPhoto());
         viewHolder.textView.setText(users.get(position).getUsername());
 
         return convertView;
