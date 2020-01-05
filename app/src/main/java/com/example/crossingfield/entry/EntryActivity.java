@@ -4,18 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.crossingfield.R;
@@ -32,6 +39,7 @@ import static com.example.crossingfield.lib.StringConstants.*;
 public class EntryActivity extends AppCompatActivity {
 
     private Context context;
+    private static final int RESULT_PICK_IMAGEFILE = 1000;
 
     private EditText nameText;
     private Spinner monthSpinner;
@@ -41,6 +49,8 @@ public class EntryActivity extends AppCompatActivity {
     private EditText passwordText;
     private RadioGroup rg;
 
+    private ImageView imageView;
+
     // 入力した生年月日
     private Integer month;
     private Integer day;
@@ -49,7 +59,11 @@ public class EntryActivity extends AppCompatActivity {
     private String area;
 
     // 送信するデータ
-    private byte[] data;
+    private ByteArrayOutputStream data;
+
+    // 送信する画像データ
+    private Bitmap bmp;
+    private String image;
 
 
     @Override
@@ -82,8 +96,6 @@ public class EntryActivity extends AppCompatActivity {
         final Button entryButton = (Button)findViewById(R.id.entry);
 
         Button imageButton = (Button)findViewById(R.id.send_image);
-
-
 
         // 月の選択により日の候補が決定
         monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -158,15 +170,22 @@ public class EntryActivity extends AppCompatActivity {
             }
         });
 
+        // imageボタンが押された時
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.monky);
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
+
+
+                /*Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.monky);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 data = baos.toByteArray();
 
-                up();
+                up();*/
             }
         });
 
@@ -194,13 +213,14 @@ public class EntryActivity extends AppCompatActivity {
                 String d = String.valueOf(day);
                 String password = passwordText.getText().toString();
 
-                if (gender != null && name.equals("") == false && y.equals("") == false && password.equals("") == false){
+                if (gender != null && name.equals("") == false && y.equals("") == false && password.equals("") == false && image != null){
 
-                    String send_message = String.valueOf(ENTRY) + ',' + name + ',' + password + ',' + gender + ',' + y + '/' + m + '/' + d + ',' + area;
+                    String send_message = String.valueOf(ENTRY) + ',' + name + ',' + password + ',' + gender + ',' + y + '/' + m + '/' + d + ',' + area + ',';
 
                     String message = "ニックネーム : " + name + '\n' + "性別 : " + gender + '\n' + "生年月日 : " + y + '年' + m + '月' + d + '日' + '\n' + "居住地 : " + area + '\n' + "password : " + password;
+
                     // 入力確認ダイアログの表示
-                    DialogFragment entryFragment = new EntryDialogFragment(context, message, send_message);
+                    DialogFragment entryFragment = new EntryDialogFragment(context, message, send_message, bmp);
                     entryFragment.show(getSupportFragmentManager(), "entry");
                 }else{
                     System.out.println("no");
@@ -208,6 +228,26 @@ public class EntryActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData){
+        if (requestCode == RESULT_PICK_IMAGEFILE && resultCode == RESULT_OK){
+            Uri uri = null;
+            if (resultData != null){
+                uri = resultData.getData();
+
+                try {
+                    bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    data = baos;
+                    //image = baos.toString("UTF-8");
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void up(){

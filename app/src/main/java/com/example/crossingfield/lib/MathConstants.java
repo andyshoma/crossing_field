@@ -9,12 +9,14 @@ public class MathConstants {
 
     public static final Integer ENTRY = 1;
 
-    public static final Integer SEARCH = 2;
+    public static final Integer LOGIN = 2;
 
-    public static final Integer GOOD = 3;
+    public static final Integer SEARCH = 3;
 
-    public static final Integer CHAT = 4;
+    public static final Integer GOOD = 4;
 
-    public static final Integer LOGIN = 5;
+    public static final Integer CHAT_SEND = 5;
+
+    public static final Integer CHAT_RECEIVE = 6;
 
 }

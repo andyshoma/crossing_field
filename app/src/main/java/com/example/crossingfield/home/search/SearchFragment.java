@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -19,9 +21,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.crossingfield.R;
+import com.example.crossingfield.home.message.MessageListAdapter;
 import com.example.crossingfield.lib.MySocket;
+import com.example.crossingfield.lib.User;
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.crossingfield.lib.MathConstants.*;
@@ -40,6 +48,32 @@ public class SearchFragment extends Fragment {
     private String sendMessage;
 
     public SearchFragment(){ }
+    public FragmentManager fragmentManager;
+
+    public class Model{
+        @SerializedName("user")
+        @Expose
+        public Person person;
+    }
+
+    public class Person{
+        @SerializedName("gender")
+        @Expose
+        public String gender;
+        @SerializedName("age")
+        @Expose
+        public Integer age;
+        @SerializedName("pass")
+        @Expose
+        public String password;
+        @SerializedName("area")
+        @Expose
+        public String area;
+        @SerializedName("name")
+        @Expose
+        public String user_name;
+
+    }
 
     public static SearchFragment newInstance(){
         SearchFragment searchFragment = new SearchFragment();
@@ -69,6 +103,8 @@ public class SearchFragment extends Fragment {
                 R.array.area, android.R.layout.simple_spinner_item);
         areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         areaSpinner.setAdapter(areaAdapter);
+
+        fragmentManager = getFragmentManager();
 
         // 都道府県のSpinner
         areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -114,7 +150,6 @@ public class SearchFragment extends Fragment {
         popButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getFragmentManager();
                 if(fragmentManager != null){
                     fragmentManager.popBackStack();
                 }
@@ -123,26 +158,49 @@ public class SearchFragment extends Fragment {
     }
 
     private void search(){
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, String>(){
             @Override
-            protected Void doInBackground(Void... voids) {
+            protected String doInBackground(Void... voids) {
                 MySocket socket = new MySocket(getContext());
                 socket.setMessage(sendMessage);
-                socket.send();
+                String get_message = socket.trySend();
 
-                return null;
+                return get_message;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
+            protected void onPostExecute(String string) {
+                super.onPostExecute(string);
 
-                FragmentManager fragmentManager = getFragmentManager();
+                ArrayList<String> jsons = new ArrayList<>(Arrays.asList(string.split("@")));
+                ArrayList<User> users = new ArrayList<>();
+
+                for (String json : jsons){
+                    Gson gson = new Gson();
+                    Model model = gson.fromJson(json, Model.class);
+                    users.add(setUser(model));
+                }
+
+                ListView listView = getActivity().findViewById(R.id.search_list);
+
+                BaseAdapter adapter = new SearchListAdapter(getContext(), users);
+                listView.setAdapter(adapter);
+
                 if(fragmentManager != null){
                     fragmentManager.popBackStack();
                 }
             }
         }.execute();
+    }
+
+    public User setUser(Model model){
+        User user = new User();
+        user.setGender(model.person.gender);
+        user.setOld(model.person.age);
+        user.setArea(model.person.area);
+        user.setUsername(model.person.user_name);
+
+        return user;
     }
 
 }

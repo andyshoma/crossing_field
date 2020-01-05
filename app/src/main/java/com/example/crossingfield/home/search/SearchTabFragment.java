@@ -19,7 +19,6 @@ public class SearchTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         super.onCreateView(inflater, container, savedInstanceState);
-        System.out.println("hey");
         return inflater.inflate(R.layout.fragment_tab_search, container, false);
     }
 

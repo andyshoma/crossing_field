@@ -2,9 +2,9 @@ package com.example.crossingfield.lib;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +24,7 @@ public class MyHTTP {
         }
     }
 
-    public void upload(byte[] data) {
+    public void upload(ByteArrayOutputStream data) {
 
         try{
             httpURLConnection = (HttpURLConnection)url.openConnection();
@@ -39,7 +39,7 @@ public class MyHTTP {
 
             try{
                 OutputStream outputStream = new BufferedOutputStream(httpURLConnection.getOutputStream());
-                outputStream.write(data);
+                outputStream.write(data.toByteArray());
                 outputStream.flush();
             }catch (IOException e){
                 e.printStackTrace();
@@ -59,6 +59,12 @@ public class MyHTTP {
         try{
             httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+
+            httpURLConnection.setReadTimeout(10000);
+            httpURLConnection.setConnectTimeout(20000);
+
+            httpURLConnection.connect();
+
             Bitmap bitmap = BitmapFactory.decodeStream(httpURLConnection.getInputStream());
 
             return bitmap;

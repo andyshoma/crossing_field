@@ -38,10 +38,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // login();
-
-                Intent intent = new Intent(context, HomeActivity.class);
-                startActivity(intent);
+                login();
             }
         });
     }
@@ -49,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private String login(){
         String username = userText.getText().toString();
         String password = passText.getText().toString();
-        final String sendMessage = LOGIN + ",{" + USER_NAME + ':' + username + ',' + PASSWORD + ':' + password + '}';
+        final String sendMessage = LOGIN + "," + username + ',' + password;
         System.out.println(sendMessage);
 
         new AsyncTask<Void, Void, String>(){
@@ -59,16 +56,16 @@ public class LoginActivity extends AppCompatActivity {
 
                 MySocket socket = new MySocket(context);
                 socket.setMessage(sendMessage);
-                String getMessage = socket.trySend();
+                String str = socket.trySend();
 
-                return getMessage;
+                return str;
             }
 
             @Override
-            protected void onPostExecute(String getMessage) {
-                super.onPostExecute(getMessage);
+            protected void onPostExecute(String str) {
+                super.onPostExecute(str);
 
-                if (getMessage == "OK"){
+                if (str.equals("\n") == false && str == null){
                     // usernameとpasswordが正しい場合
 
                     Intent intent = new Intent(context, HomeActivity.class);

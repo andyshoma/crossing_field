@@ -20,8 +20,6 @@ public class GoodTabFragment extends Fragment {
 
     private ArrayList<User> users;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         super.onCreateView(inflater, container, savedInstanceState);

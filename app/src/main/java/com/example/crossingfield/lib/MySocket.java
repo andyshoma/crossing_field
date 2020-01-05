@@ -7,6 +7,7 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -19,6 +20,7 @@ public class MySocket {
 
     private String send_message = "";
     private String get_message = "";
+    private Object get_object;
 
     public MySocket(Context context){
         this.context = context;
@@ -76,7 +78,6 @@ public class MySocket {
 
                 // サーバへメッセージを送信
                 pw.println(send_message);
-                System.out.println(send_message);
             }
         }catch (UnknownHostException e){
             e.printStackTrace();
@@ -143,11 +144,15 @@ public class MySocket {
                 // サーバへメッセージを送信
                 pw.println(send_message);
 
+                System.out.println("send:" + send_message);
+
                 // メッセージ取得オブジェクトのインスタンス化
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                 // サーバからのメッセージを受信
                 get_message = reader.readLine();
+                System.out.println("メッセージを受信しました");
+                System.out.println("get:" + get_message);
             }
         }catch (UnknownHostException e){
             e.printStackTrace();
@@ -160,6 +165,7 @@ public class MySocket {
                 reader.close();
                 socket.close();
                 socket = null;
+                System.out.println("socketを閉じました");
             }catch (IOException e){
                 e.printStackTrace();
             }
