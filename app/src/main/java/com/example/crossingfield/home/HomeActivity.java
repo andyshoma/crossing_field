@@ -15,7 +15,15 @@ import android.widget.TextView;
 import com.example.crossingfield.R;
 import com.example.crossingfield.lib.MyHTTP;
 import com.example.crossingfield.lib.MySocket;
+import com.example.crossingfield.lib.User;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 import static com.example.crossingfield.lib.MathConstants.*;
 
@@ -23,6 +31,8 @@ public class HomeActivity extends AppCompatActivity {
 
     public Context context;
     public String name;
+    private User my_user;
+    public ArrayList<User> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +42,25 @@ public class HomeActivity extends AppCompatActivity {
         context = getApplicationContext();
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
+        my_user = (User)intent.getSerializableExtra("my_user");
+        //User user = new Gson().fromJson(my_user.toJSON().toString(), User.class);
+
+
+        BufferedWriter writer = null;
+        try{
+            writer = new BufferedWriter(new OutputStreamWriter(openFileOutput("init.txt", Context.MODE_PRIVATE)));
+            writer.write(my_user.toJSON().toString());
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         try{
             Class.forName("android.os.AsyncTask");
@@ -40,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         //init();
 
-        HomeFragmentPagerAdapter adapter = new HomeFragmentPagerAdapter(getSupportFragmentManager());
+        HomeFragmentPagerAdapter adapter = new HomeFragmentPagerAdapter(getSupportFragmentManager(), my_user);
         final ViewPager viewPager = findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(adapter);

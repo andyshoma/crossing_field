@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.crossingfield.R;
+import com.example.crossingfield.home.HomeActivity;
 import com.example.crossingfield.home.message.MessageListAdapter;
 import com.example.crossingfield.lib.MyHTTP;
 import com.example.crossingfield.lib.MySocket;
@@ -33,6 +34,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,13 +61,19 @@ public class SearchFragment extends Fragment {
     private String sendMessage;
     private ArrayList<String> jsons;
     public ArrayList<User> users;
+    private User my_user;
 
     public SearchTask sTask;
     public CountDownLatch latch;
     public CountDownLatch latch2;
 
-    public SearchFragment(){ }
     public FragmentManager fragmentManager;
+
+    public static SearchFragment newInstance(){
+        SearchFragment searchFragment = new SearchFragment();
+
+        return searchFragment;
+    }
 
     public class Person{
         @SerializedName("gender")
@@ -84,20 +94,34 @@ public class SearchFragment extends Fragment {
 
     }
 
-    public static SearchFragment newInstance(){
-        SearchFragment searchFragment = new SearchFragment();
-
-        return searchFragment;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         super.onCreateView(inflater, container, savedInstanceState);
+
+        BufferedReader reader = null;
+        try{
+            reader = new BufferedReader(new InputStreamReader(getContext().openFileInput("init.txt")));
+            String str = null;
+            str = reader.readLine();
+            my_user = new Gson().fromJson(str, User.class);
+            System.out.println(my_user.toString());
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle saveInstanceState){
+    public void onViewCreated(View view, final Bundle saveInstanceState){
         super.onViewCreated(view, saveInstanceState);
 
         this.view1 = view;
@@ -134,7 +158,7 @@ public class SearchFragment extends Fragment {
         });
 
 
-        Button searchButton = (Button) view.findViewById(R.id.search_done);
+        final Button searchButton = (Button) view.findViewById(R.id.search_done);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,7 +224,9 @@ public class SearchFragment extends Fragment {
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                         Bundle bundle = new Bundle();
+                        System.out.println("s:" + users.size());
                         bundle.putSerializable("users", users);
+                        bundle.putSerializable("my_user", my_user);
 
                         SearchTabFragment fragment = new SearchTabFragment();
                         fragment.setArguments(bundle);
@@ -221,6 +247,10 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                SearchFragment searchFragment = new SearchFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("users", null);
+                searchFragment.setArguments(bundle);
 
                 if (fragmentManager != null){
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

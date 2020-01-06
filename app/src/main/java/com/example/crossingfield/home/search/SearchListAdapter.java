@@ -1,10 +1,14 @@
 package com.example.crossingfield.home.search;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.crossingfield.R;
@@ -15,10 +19,13 @@ import java.util.ArrayList;
 public class SearchListAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<User> users;
+    private User my_user = new User();
     private LayoutInflater layoutInflater;
 
     public class ViewHolder{
+        ImageView imageView;
         TextView textView;
+        ImageButton imageButton;
     }
 
     public SearchListAdapter(Context context, ArrayList<User> users){
@@ -44,19 +51,29 @@ public class SearchListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, final ViewGroup parent){
 
         ViewHolder viewHolder;
         if (convertView == null){
             convertView = layoutInflater.inflate(R.layout.list_search, parent, false);
             viewHolder = new ViewHolder();
+            viewHolder.imageView = convertView.findViewById(R.id.search_image);
             viewHolder.textView = convertView.findViewById(R.id.user_name);
+            viewHolder.imageButton = convertView.findViewById(R.id.search_image_button);
             convertView.setTag(viewHolder);
-            System.out.println("tab");
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
+        viewHolder.imageView.setImageBitmap(users.get(position).getPhoto());
+        viewHolder.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GoodSendTask task = new GoodSendTask(context, my_user.getUsername(), users.get(position).getUsername());
+                System.out.println(position);
+                task.execute();
+            }
+        });
         viewHolder.textView.setText(users.get(position).getUsername());
 
         return convertView;

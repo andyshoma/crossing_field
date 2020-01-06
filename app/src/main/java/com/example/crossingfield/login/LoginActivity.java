@@ -14,6 +14,10 @@ import android.widget.Toast;
 import com.example.crossingfield.home.HomeActivity;
 import com.example.crossingfield.lib.MySocket;
 import com.example.crossingfield.R;
+import com.example.crossingfield.lib.User;
+
+import java.util.concurrent.CountDownLatch;
+
 import static com.example.crossingfield.lib.MathConstants.*;
 import static com.example.crossingfield.lib.StringConstants.*;
 
@@ -22,6 +26,10 @@ public class LoginActivity extends AppCompatActivity {
     public Context context;
     public EditText userText;
     public EditText passText;
+    private String send_message;
+
+    public CountDownLatch latch;
+    private User me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,49 +45,49 @@ public class LoginActivity extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //login();
-                Intent intent = new Intent(context, HomeActivity.class);
-                startActivity(intent);
+                login();
             }
         });
     }
 
-    private String login(){
+    private void login(){
         String username = userText.getText().toString();
         String password = passText.getText().toString();
-        final String sendMessage = LOGIN + "," + username + ',' + password;
-        System.out.println(sendMessage);
+        send_message = LOGIN + "," + username + ',' + password + ',';
 
-        new AsyncTask<Void, Void, String>(){
-
+        latch = new CountDownLatch(1);
+        new Thread(new Runnable() {
             @Override
-            protected String doInBackground(Void... voids) {
+            public void run() {
+                LoginTask task = new LoginTask(context, send_message, latch);
+                task.setOnCallBack(new LoginTask.LoginCallBackTask(){
+                    @Override
+                    public void CallBack(User user){
+                        me = user;
+                        System.out.println(me.getUsername());
+                    }
+                });
+                try{
+                    Thread.sleep(1000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                task.execute();
+                System.out.println("uis");
 
-                MySocket socket = new MySocket(context);
-                socket.setMessage(sendMessage);
-                String str = socket.trySend();
-
-                return str;
-            }
-
-            @Override
-            protected void onPostExecute(String str) {
-                super.onPostExecute(str);
-
-                if (str.equals("\n") == false && str == null){
-                    // usernameとpasswordが正しい場合
-
-                    Intent intent = new Intent(context, HomeActivity.class);
-                    startActivity(intent);
-                }else{
-                    // usernameもしくはpasswordが間違っていた場合
-
-                    Toast.makeText(context, "正しくありません", Toast.LENGTH_LONG);
-                    System.out.println("間違い");
+                try{
+                    latch.await();
+                    Thread.sleep(1000);
+                    System.out.println("hello");
+                    if (me != null){
+                        Intent intent = new Intent(context, HomeActivity.class);
+                        intent.putExtra("my_user", me);
+                        startActivity(intent);
+                    }
+                }catch (InterruptedException e){
+                    e.printStackTrace();
                 }
             }
-        }.execute();
-
-        return "jda";
+        }).start();
     }
 }

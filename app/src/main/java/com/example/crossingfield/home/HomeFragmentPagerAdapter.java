@@ -1,5 +1,7 @@
 package com.example.crossingfield.home;
 
+import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -10,13 +12,19 @@ import com.example.crossingfield.home.mypage.MypageTabFragment;
 import com.example.crossingfield.home.search.SearchContainerFragment;
 import com.example.crossingfield.home.meeting.MeetingTabFragment;
 import com.example.crossingfield.home.good.GoodTabFragment;
+import com.example.crossingfield.home.search.SearchTabFragment;
+import com.example.crossingfield.lib.User;
 
 public class HomeFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private CharSequence[] tabTitles = {"待ち合わせ", "探す", "メッセージ", "相手から", "マイページ"};
+    private Bundle bundle;
 
-    public HomeFragmentPagerAdapter(FragmentManager fm){
+    public HomeFragmentPagerAdapter(FragmentManager fm, User user){
         super(fm);
+
+        bundle = new Bundle();
+        bundle.putSerializable("my_user", user);
     }
 
     @Override
@@ -45,5 +53,10 @@ public class HomeFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return tabTitles.length;
+    }
+
+    public void setUserToFragment(User user){
+        bundle = new Bundle();
+        bundle.putSerializable("my_user", user);
     }
 }

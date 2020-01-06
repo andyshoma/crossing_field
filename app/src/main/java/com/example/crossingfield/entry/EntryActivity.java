@@ -185,14 +185,6 @@ public class EntryActivity extends AppCompatActivity {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
                 startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
-
-
-                /*Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.monky);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                data = baos.toByteArray();
-
-                up();*/
             }
         });
 
