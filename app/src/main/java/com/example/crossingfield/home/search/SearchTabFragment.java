@@ -101,7 +101,7 @@ public class SearchTabFragment extends Fragment {
 
         ListView listView = getActivity().findViewById(R.id.search_list);
 
-        BaseAdapter adapter = new SearchListAdapter(getContext(), users);
+        BaseAdapter adapter = new SearchListAdapter(getContext(), users, my_user);
         listView.setAdapter(adapter);
     }
 

@@ -15,8 +15,14 @@ public class MathConstants {
 
     public static final Integer GOOD = 4;
 
-    public static final Integer CHAT_SEND = 5;
+    public static final Integer GOOD_RECEIVE = 5;
 
-    public static final Integer CHAT_RECEIVE = 6;
+    public static final Integer THANKS = 6;
+
+    public static final Integer CHAT_SEND = 7;
+
+    public static final Integer CHAT_RECEIVE = 8;
+
+
 
 }

@@ -28,10 +28,11 @@ public class SearchListAdapter extends BaseAdapter {
         ImageButton imageButton;
     }
 
-    public SearchListAdapter(Context context, ArrayList<User> users){
+    public SearchListAdapter(Context context, ArrayList<User> users, User my_user){
         super();
         this.context = context;
         this.users = users;
+        this.my_user = my_user;
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 

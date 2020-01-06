@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.crossingfield.R;
+import com.example.crossingfield.home.good.GoodReceiveTask;
 import com.example.crossingfield.lib.MyHTTP;
 import com.example.crossingfield.lib.MySocket;
 import com.example.crossingfield.lib.User;
