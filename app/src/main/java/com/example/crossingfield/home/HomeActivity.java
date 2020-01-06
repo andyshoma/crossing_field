@@ -33,6 +33,11 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
 
+        try{
+            Class.forName("android.os.AsyncTask");
+        }catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
         //init();
 
         HomeFragmentPagerAdapter adapter = new HomeFragmentPagerAdapter(getSupportFragmentManager());

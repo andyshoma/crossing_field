@@ -33,7 +33,7 @@ public class MessageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
-        icon = intent.getIntExtra("icon", 0);
+        icon = intent.getParcelableExtra("icon");
 
         setTitle(name);
 

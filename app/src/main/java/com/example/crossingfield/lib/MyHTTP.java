@@ -2,6 +2,12 @@ package com.example.crossingfield.lib;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
+import android.util.Base64;
+
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -27,6 +33,12 @@ public class MyHTTP {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public class Icon{
+        @SerializedName("image")
+        @Expose
+        public String image;
     }
 
     public void upload(String data) {
@@ -76,7 +88,61 @@ public class MyHTTP {
         }
     }
 
-    public Bitmap download(){
+    public Bitmap download(String send_message){
+
+        Bitmap bitmap = null;
+
+        try{
+            httpURLConnection = (HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            httpURLConnection.setInstanceFollowRedirects(false);
+            httpURLConnection.setRequestProperty("Accept-Language", "jp");
+            httpURLConnection.setReadTimeout(10000);
+            httpURLConnection.setConnectTimeout(20000);
+
+            httpURLConnection.connect();
+
+            try{
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(send_message.getBytes(StandardCharsets.UTF_8));
+                outputStream.flush();
+                outputStream.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
+            if (httpURLConnection.getResponseCode() != 200){
+                throw new RuntimeException("Failed : HTTP error code : " + httpURLConnection.getResponseCode());
+            }
+
+            System.out.println("http done");
+
+
+            //BitmapFactory.decodeStream(httpURLConnection.getInputStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+            String input = br.readLine();
+            Gson gson = new Gson();
+            Icon icon = gson.fromJson(input, Icon.class);
+            byte[] decode = Base64.decode(icon.image, 0);
+            bitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally{
+            if (httpURLConnection != null){
+                httpURLConnection.disconnect();
+                httpURLConnection = null;
+            }
+        }
+        return bitmap;
+    }
+
+    public Bitmap downloads(){
 
         try{
             httpURLConnection = (HttpURLConnection)url.openConnection();

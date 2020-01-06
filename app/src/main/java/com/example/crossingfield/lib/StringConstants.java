@@ -16,4 +16,5 @@ public class StringConstants {
     public static final String PASSWORD = "password";
 
     public static final String OLD = "old";
+
 }

@@ -52,6 +52,7 @@ public class SearchListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.textView = convertView.findViewById(R.id.user_name);
             convertView.setTag(viewHolder);
+            System.out.println("tab");
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
         }

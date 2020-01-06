@@ -1,7 +1,9 @@
 package com.example.crossingfield.home.search;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.media.MediaBrowserCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +21,25 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.crossingfield.R;
 import com.example.crossingfield.home.message.MessageListAdapter;
+import com.example.crossingfield.lib.MyHTTP;
 import com.example.crossingfield.lib.MySocket;
 import com.example.crossingfield.lib.User;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.example.crossingfield.lib.MathConstants.*;
 import static com.example.crossingfield.lib.StringConstants.*;
@@ -46,15 +55,15 @@ public class SearchFragment extends Fragment {
 
     private String area;
     private String sendMessage;
+    private ArrayList<String> jsons;
+    public ArrayList<User> users;
+
+    public SearchTask sTask;
+    public CountDownLatch latch;
+    public CountDownLatch latch2;
 
     public SearchFragment(){ }
     public FragmentManager fragmentManager;
-
-    public class Model{
-        @SerializedName("user")
-        @Expose
-        public Person person;
-    }
 
     public class Person{
         @SerializedName("gender")
@@ -106,6 +115,10 @@ public class SearchFragment extends Fragment {
 
         fragmentManager = getFragmentManager();
 
+        users = new ArrayList<>();
+
+        sTask = new SearchTask(getContext());
+
         // 都道府県のSpinner
         areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -125,24 +138,81 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                latch = new CountDownLatch(1);
+
                 int checkedId = rg.getCheckedRadioButtonId();
 
                 String gender = null;
-                if (checkedId != -1){
+                if (checkedId != -1) {
                     // 選択されているラジオボタンの取得
                     RadioButton genderButton = (RadioButton) view1.findViewById(checkedId);
                     gender = genderButton.getText().toString();
-                    if (gender.equals("男性") == true){
+                    if (gender.equals("男性") == true) {
                         gender = "male";
-                    }else{
+                    } else {
                         gender = "famale";
                     }
                 }
 
-                String old = oldFrom.getText().toString() + ',' +  oldTo.getText().toString();
+                String old = oldFrom.getText().toString() + ',' + oldTo.getText().toString();
 
-                sendMessage = String.valueOf(SEARCH) + ',' + gender + ',' + old + ',' + area;
-                search();
+                sendMessage = String.valueOf(SEARCH) + ',' + gender + ',' + old + ',' + area + ',';
+                sTask.setPram(latch, sendMessage);
+                sTask.setOnCallBack(new SearchTask.SearchCallBackTask() {
+                    @Override
+                    public void CallBack(String result) {
+                        super.CallBack(result);
+                        ArrayList<String> js = new ArrayList<>(Arrays.asList(result.split("@")));
+                        jsons = js;
+                        latch2 = new CountDownLatch(jsons.size());
+                        System.out.println(jsons);
+                    }
+                });
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sTask.execute();
+
+                        try{
+                            latch.await();
+                        }catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+
+                        imageGetRequest();
+
+                        try {
+                            latch2.await();
+                        }catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+
+                        for(int i = 0; i < users.size(); i++){
+                            if (users.get(i).getPhoto() != null){
+                                System.out.println("photo");
+                            }
+                        }
+
+                        System.out.println("set fin");
+
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("users", users);
+
+                        SearchTabFragment fragment = new SearchTabFragment();
+                        fragment.setArguments(bundle);
+
+                        if (fragmentManager != null){
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.container, fragment);
+                            fragmentTransaction.commit();
+                        }
+                    }
+                }).start();
+
             }
         });
 
@@ -150,57 +220,66 @@ public class SearchFragment extends Fragment {
         popButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(fragmentManager != null){
-                    fragmentManager.popBackStack();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+                if (fragmentManager != null){
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container, new SearchTabFragment());
+                    fragmentTransaction.commit();
                 }
             }
         });
     }
 
-    private void search(){
-        new AsyncTask<Void, Void, String>(){
-            @Override
-            protected String doInBackground(Void... voids) {
-                MySocket socket = new MySocket(getContext());
-                socket.setMessage(sendMessage);
-                String get_message = socket.trySend();
+    private void getImage(final String name, final Integer position){
 
-                return get_message;
+        new AsyncTask<Void, Void, Bitmap>(){
+
+            @Override
+            protected Bitmap doInBackground(Void...voids) {
+
+                System.out.println("latch:" + latch2.getCount());
+
+                Bitmap image;
+                String url = "http://192.168.2.200:8100/send";
+                MyHTTP http = new MyHTTP(url);
+                image = http.download(name);
+
+                return image;
             }
 
             @Override
-            protected void onPostExecute(String string) {
-                super.onPostExecute(string);
+            protected void onPostExecute(Bitmap image) {
+                super.onPostExecute(image);
 
-                ArrayList<String> jsons = new ArrayList<>(Arrays.asList(string.split("@")));
-                ArrayList<User> users = new ArrayList<>();
+                users.get(position).setPhoto(image);
+                System.out.println("get");
 
-                for (String json : jsons){
-                    Gson gson = new Gson();
-                    Model model = gson.fromJson(json, Model.class);
-                    users.add(setUser(model));
-                }
-
-                ListView listView = getActivity().findViewById(R.id.search_list);
-
-                BaseAdapter adapter = new SearchListAdapter(getContext(), users);
-                listView.setAdapter(adapter);
-
-                if(fragmentManager != null){
-                    fragmentManager.popBackStack();
-                }
+                latch2.countDown();
             }
         }.execute();
     }
 
-    public User setUser(Model model){
+    public User setUser(Person person){
         User user = new User();
-        user.setGender(model.person.gender);
-        user.setOld(model.person.age);
-        user.setArea(model.person.area);
-        user.setUsername(model.person.user_name);
+        user.setGender(person.gender);
+        user.setOld(person.age);
+        user.setArea(person.area);
+        user.setUsername(person.user_name);
 
         return user;
+    }
+
+    public void imageGetRequest(){
+        for (int i = 0; i < jsons.size(); i++){
+            String json = jsons.get(i);
+            Gson gson = new Gson();
+            Person person = gson.fromJson(json, Person.class);
+            System.out.println(person.password);
+            User user = setUser(person);
+            getImage(user.getUsername(), i);
+            users.add(user);
+        }
     }
 
 }

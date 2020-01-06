@@ -114,7 +114,7 @@ public class EntryDialogFragment extends DialogFragment {
             protected Void doInBackground(Void... voids){
 
                 // 送信先のURL
-                String url = "http://192.168.2.200:8100/save_prof";
+                String url = "http://192.168.2.200:8100/save";
 
                 MyHTTP http = new MyHTTP(url);
                 http.upload(image);
